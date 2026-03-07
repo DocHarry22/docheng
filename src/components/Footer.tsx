@@ -98,7 +98,7 @@ export default function Footer() {
               </div>
 
               <p className="text-sm leading-relaxed text-text-secondary">
-                Build trust into AI with engineering-grade product systems for work, study, and technical growth.
+                Engineering-grade AI product systems for learning, work, and technical growth.
               </p>
             </div>
           </motion.div>

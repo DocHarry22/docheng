@@ -117,7 +117,7 @@ export default function ProductGrid() {
 								One Intelligence Backbone.
 							</span>{" "}
 							<span className="bg-linear-to-r from-brand-blue-light to-brand-orange-light bg-clip-text text-transparent">
-								Multiple Precision Products.
+								Multiple Connected Products.
 							</span>
 						</h2>
 
@@ -250,7 +250,7 @@ export default function ProductGrid() {
 								Ecosystem Momentum
 							</p>
 							<h3 className="mt-2 text-heading text-text-primary sm:text-[1.5rem]">
-								Building the operating system for engineering intelligence
+								Building the operating system for practical intelligence
 							</h3>
 							<p className="mt-2 max-w-2xl text-sm leading-relaxed text-text-secondary sm:text-base">
 								From live products to upcoming systems, each release expands a cohesive intelligence platform.

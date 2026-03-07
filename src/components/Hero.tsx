@@ -54,7 +54,7 @@ export default function Hero() {
             <motion.div variants={fadeOnly} className="mb-8 md:mb-10">
               <span className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/8 border border-white/12 text-[12px] font-medium text-white/80 tracking-wide backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-                Building the future of engineering intelligence
+                Building the future of practical intelligence
               </span>
             </motion.div>
 
@@ -71,7 +71,7 @@ export default function Hero() {
               className="mb-5 md:mb-6 max-w-lg text-xl sm:text-2xl md:text-[1.7rem] text-white/90 leading-relaxed font-light drop-shadow-[0_2px_20px_rgba(0,0,0,0.8)]"
             >
               The intelligence ecosystem for{" "}
-              <span className="text-white font-medium">engineering professionals</span>.
+              <span className="text-white font-medium">learning, work, and technical growth</span>.
             </motion.p>
 
             {/* Supporting description - better contrast */}
@@ -79,7 +79,7 @@ export default function Hero() {
               variants={fadeInUp}
               className="mb-12 md:mb-14 max-w-md text-[15px] md:text-base text-white/60 leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
             >
-              AI-powered tools for documentation, learning, research, and technical growth — unified in one premium ecosystem.
+              AI-powered tools for documentation, learning, research, and technical growth - unified in one connected ecosystem.
             </motion.p>
 
             {/* CTA row - stronger buttons */}
@@ -110,7 +110,7 @@ export default function Hero() {
               variants={fadeOnly}
               className="mt-16 md:mt-20 text-[11px] text-white/40 tracking-[0.2em] uppercase font-medium"
             >
-              Driven by Curiosity · Engineered for Excellence
+              Driven by Curiosity · Built for Real Work
             </motion.p>
           </motion.div>
         </div>
