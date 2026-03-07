@@ -46,7 +46,7 @@ export const products: Product[] = [
     categories: ["productivity", "ai-tools"],
     icon: Brain,
     gradient: "from-blue-500 to-cyan-400",
-    url: "/desk",
+    url: "#cta",
   },
   {
     id: "chatpdf",
@@ -58,7 +58,7 @@ export const products: Product[] = [
     categories: ["ai-tools", "student"],
     icon: FileText,
     gradient: "from-violet-500 to-purple-400",
-    url: "/chatpdf",
+    url: "#cta",
   },
   {
     id: "resume-parser",
@@ -70,7 +70,7 @@ export const products: Product[] = [
     categories: ["career"],
     icon: UserCheck,
     gradient: "from-amber-500 to-orange-400",
-    url: "/resume-parser",
+    url: "#cta",
   },
   {
     id: "course-compass",

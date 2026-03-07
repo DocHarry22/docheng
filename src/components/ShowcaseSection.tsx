@@ -4,6 +4,15 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import SectionHeader from "./SectionHeader";
 
+function hexToRgba(hex: string, alpha: number): string {
+  const clean = hex.replace("#", "");
+  const bigint = Number.parseInt(clean, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 const panels = [
   {
     title: "DoCHEng Desk",
@@ -45,7 +54,7 @@ const panels = [
 
 function MockupDesk({ color }: { color: string }) {
   return (
-    <div className="absolute inset-0 p-6 flex flex-col gap-3 pointer-events-none" style={{ "--mockup-color": color } as React.CSSProperties}>
+    <div className="absolute inset-0 p-6 flex flex-col gap-3 pointer-events-none">
       {/* Sidebar + Main layout */}
       <div className="flex gap-3 flex-1">
         {/* Sidebar */}
@@ -66,11 +75,11 @@ function MockupDesk({ color }: { color: string }) {
           <div className="flex-1 mt-2 rounded-lg bg-surface-overlay/40 border border-border-subtle/20 p-3">
             {/* Knowledge graph hint */}
             <div className="flex gap-3 items-center">
-              <div className="w-4 h-4 rounded-full bg-(--mockup-color)/20" />
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: hexToRgba(color, 0.2) }} />
               <div className="h-px flex-1 bg-border-subtle/30" />
-              <div className="w-3 h-3 rounded-full bg-(--mockup-color)/15" />
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: hexToRgba(color, 0.15) }} />
               <div className="h-px flex-1 bg-border-subtle/30" />
-              <div className="w-3.5 h-3.5 rounded-full bg-(--mockup-color)/18" />
+              <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: hexToRgba(color, 0.18) }} />
             </div>
           </div>
         </div>
@@ -81,7 +90,7 @@ function MockupDesk({ color }: { color: string }) {
 
 function MockupChatPDF({ color }: { color: string }) {
   return (
-    <div className="absolute inset-0 p-6 flex flex-col gap-3 pointer-events-none" style={{ "--mockup-color": color } as React.CSSProperties}>
+    <div className="absolute inset-0 p-6 flex flex-col gap-3 pointer-events-none">
       <div className="flex gap-3 flex-1">
         {/* PDF panel */}
         <div className="w-1/2 rounded-lg bg-surface-overlay/30 border border-border-subtle/20 p-3 flex flex-col gap-2">
@@ -98,16 +107,22 @@ function MockupChatPDF({ color }: { color: string }) {
             <div className="h-2 w-10/12 rounded bg-border-subtle/30" />
             <div className="h-2 w-8/12 rounded bg-border-subtle/20 mt-1" />
           </div>
-          <div className="rounded-lg bg-(--mockup-color)/5 border border-(--mockup-color)/10 p-2.5">
-            <div className="h-2 w-full rounded bg-(--mockup-color)/15" />
-            <div className="h-2 w-9/12 rounded bg-(--mockup-color)/10 mt-1" />
+          <div
+            className="rounded-lg p-2.5"
+            style={{
+              backgroundColor: hexToRgba(color, 0.05),
+              border: `1px solid ${hexToRgba(color, 0.1)}`,
+            }}
+          >
+            <div className="h-2 w-full rounded" style={{ backgroundColor: hexToRgba(color, 0.15) }} />
+            <div className="h-2 w-9/12 rounded mt-1" style={{ backgroundColor: hexToRgba(color, 0.1) }} />
           </div>
           <div className="rounded-lg bg-surface-overlay/30 border border-border-subtle/20 p-2.5">
             <div className="h-2 w-7/12 rounded bg-border-subtle/30" />
           </div>
           <div className="mt-auto flex gap-2">
             <div className="flex-1 h-6 rounded bg-surface-overlay/40 border border-border-subtle/20" />
-            <div className="h-6 w-12 rounded bg-(--mockup-color)/20" />
+            <div className="h-6 w-12 rounded" style={{ backgroundColor: hexToRgba(color, 0.2) }} />
           </div>
         </div>
       </div>
@@ -117,10 +132,10 @@ function MockupChatPDF({ color }: { color: string }) {
 
 function MockupCompass({ color }: { color: string }) {
   return (
-    <div className="absolute inset-0 p-6 flex flex-col gap-3 pointer-events-none" style={{ "--mockup-color": color } as React.CSSProperties}>
+    <div className="absolute inset-0 p-6 flex flex-col gap-3 pointer-events-none">
       {/* Search bar */}
       <div className="h-7 w-full rounded-lg bg-surface-overlay/40 border border-border-subtle/20 flex items-center px-3">
-        <div className="w-3 h-3 rounded-full bg-(--mockup-color)/25" />
+        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: hexToRgba(color, 0.25) }} />
         <div className="h-2 w-32 rounded bg-border-subtle/30 ml-2" />
       </div>
       {/* Cards */}
@@ -135,9 +150,11 @@ function MockupCompass({ color }: { color: string }) {
             <div className="h-1.5 w-5/6 rounded bg-border-subtle/15" />
             <div className="mt-auto">
               <div
-                className={`h-4 w-14 rounded border border-(--mockup-color)/15 ${
-                  n === 1 ? "bg-(--mockup-color)/15" : "bg-transparent"
-                }`}
+                className="h-4 w-14 rounded"
+                style={{
+                  border: `1px solid ${hexToRgba(color, 0.15)}`,
+                  backgroundColor: n === 1 ? hexToRgba(color, 0.15) : "transparent",
+                }}
               />
             </div>
           </div>
