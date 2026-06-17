@@ -39,7 +39,12 @@ export default function CalculatorWorkbench({ slug }: { slug: string }) {
 
   useEffect(() => {
     if (!calculator || Object.keys(inputs).length === 0) return;
-    window.localStorage.setItem(getStorageKey(slug), JSON.stringify(inputs));
+
+    const timeout = window.setTimeout(() => {
+      window.localStorage.setItem(getStorageKey(slug), JSON.stringify(inputs));
+    }, 150);
+
+    return () => window.clearTimeout(timeout);
   }, [calculator, inputs, slug]);
 
   const calculation = useMemo(() => {

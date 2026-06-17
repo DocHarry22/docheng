@@ -8,6 +8,7 @@ import { isValidEmail, normalizeEmail } from "@/lib/validation";
 const USERS_FILE_PATH = join(process.cwd(), "data", "users.json");
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7;
 const MIN_PASSWORD_LENGTH = 8;
+let hasWarnedAboutDevSecret = false;
 
 export type UserRole = "viewer" | "member" | "admin";
 
@@ -30,6 +31,13 @@ interface StoredUsers {
 function getSessionSecret() {
   if (process.env.SESSION_SECRET) {
     return process.env.SESSION_SECRET;
+  }
+
+  if (process.env.NODE_ENV !== "production" && !hasWarnedAboutDevSecret) {
+    hasWarnedAboutDevSecret = true;
+    console.warn(
+      "SESSION_SECRET is not set; using the development fallback secret. Set SESSION_SECRET before deploying."
+    );
   }
 
   return process.env.NODE_ENV === "production" ? null : "docheng-dev-session-secret";

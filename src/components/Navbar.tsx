@@ -18,25 +18,26 @@ export default function Navbar({ user }: { user?: SessionUser | null }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
+  const scrollRafRef = useRef<number>(0);
+  const hashScrollRafRef = useRef<number>(0);
+  const mobileOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-   let rafRequestId = 0;
-
    const updateScrolled = () => {
      setScrolled(window.scrollY > 50);
-     rafRequestId = 0;
+     scrollRafRef.current = 0;
    };
 
    const handleScroll = () => {
-     if (rafRequestId) return;
-     rafRequestId = window.requestAnimationFrame(updateScrolled);
+     if (scrollRafRef.current) return;
+     scrollRafRef.current = window.requestAnimationFrame(updateScrolled);
    };
 
    updateScrolled();
    window.addEventListener("scroll", handleScroll, { passive: true });
    return () => {
      window.removeEventListener("scroll", handleScroll);
-     if (rafRequestId) window.cancelAnimationFrame(rafRequestId);
+     if (scrollRafRef.current) window.cancelAnimationFrame(scrollRafRef.current);
    };
   }, []);
 
@@ -46,7 +47,6 @@ export default function Navbar({ user }: { user?: SessionUser | null }) {
      if (!hash) return;
 
      let attempts = 0;
-     let rafRequestId = 0;
      const tryScroll = () => {
        const el = document.querySelector(hash);
        if (el) {
@@ -56,13 +56,16 @@ export default function Navbar({ user }: { user?: SessionUser | null }) {
 
        attempts += 1;
        if (attempts < 20) {
-         rafRequestId = window.requestAnimationFrame(tryScroll);
+         hashScrollRafRef.current = window.requestAnimationFrame(tryScroll);
        }
      };
 
-     rafRequestId = window.requestAnimationFrame(tryScroll);
+     hashScrollRafRef.current = window.requestAnimationFrame(tryScroll);
      return () => {
-       if (rafRequestId) window.cancelAnimationFrame(rafRequestId);
+       if (hashScrollRafRef.current) {
+         window.cancelAnimationFrame(hashScrollRafRef.current);
+         hashScrollRafRef.current = 0;
+       }
      };
    };
 
@@ -118,9 +121,6 @@ export default function Navbar({ user }: { user?: SessionUser | null }) {
     },
     []
   );
-
-  // Focus trap for mobile menu
-  const mobileOverlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!mobileOpen) return;
