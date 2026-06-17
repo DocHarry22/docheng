@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type { SessionUser } from "@/lib/auth";
 
 const navLinks = [
   { label: "Products", href: "#products" },
@@ -13,7 +14,7 @@ const navLinks = [
   { label: "Vision", href: "#roadmap" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ user }: { user?: SessionUser | null }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
@@ -244,24 +245,47 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-5 pl-4">
-            <a
-              href="#cta"
-              onClick={(e) => handleNavClick(e, "#cta")}
-              className="text-sm font-medium text-text-secondary hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-blue rounded"
-            >
-              Get Updates
-            </a>
-            <a
-              href="#cta"
-              onClick={(e) => handleNavClick(e, "#cta")}
-              className="relative inline-flex items-center justify-center p-px rounded-full overflow-hidden group transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white shadow-[0_0_0_1px_rgba(255,255,255,0.03)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.07),0_0_16px_rgba(59,130,246,0.28),0_0_20px_rgba(245,158,11,0.2)]"
-            >
-              <span className="absolute inset-0 bg-linear-to-r from-brand-blue/75 via-brand-silver/55 to-brand-orange/75" />
-              <span className="relative inline-flex items-center justify-center px-7 py-2.5 text-sm font-semibold text-slate-100 rounded-full bg-linear-to-b from-[#0c1327] to-[#070d1c]">
-                <span className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-linear-to-r from-transparent via-white/12 to-transparent -translate-x-full group-hover:translate-x-full" style={{ transition: "transform 0.65s ease, opacity 0.3s ease" }} />
-                <span className="relative">Join Waitlist</span>
-              </span>
-            </a>
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-medium text-text-secondary hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-blue rounded"
+                >
+                  Dashboard
+                </Link>
+                <form action="/auth/logout" method="post">
+                  <button
+                    type="submit"
+                    className="relative inline-flex items-center justify-center p-px rounded-full overflow-hidden group transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white shadow-[0_0_0_1px_rgba(255,255,255,0.03)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.07),0_0_16px_rgba(59,130,246,0.28),0_0_20px_rgba(245,158,11,0.2)]"
+                  >
+                    <span className="absolute inset-0 bg-linear-to-r from-brand-blue/75 via-brand-silver/55 to-brand-orange/75" />
+                    <span className="relative inline-flex items-center justify-center px-7 py-2.5 text-sm font-semibold text-slate-100 rounded-full bg-linear-to-b from-[#0c1327] to-[#070d1c]">
+                      <span className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-linear-to-r from-transparent via-white/12 to-transparent -translate-x-full group-hover:translate-x-full" style={{ transition: "transform 0.65s ease, opacity 0.3s ease" }} />
+                      <span className="relative">Sign Out</span>
+                    </span>
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  className="text-sm font-medium text-text-secondary hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-blue rounded"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className="relative inline-flex items-center justify-center p-px rounded-full overflow-hidden group transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white shadow-[0_0_0_1px_rgba(255,255,255,0.03)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.07),0_0_16px_rgba(59,130,246,0.28),0_0_20px_rgba(245,158,11,0.2)]"
+                >
+                  <span className="absolute inset-0 bg-linear-to-r from-brand-blue/75 via-brand-silver/55 to-brand-orange/75" />
+                  <span className="relative inline-flex items-center justify-center px-7 py-2.5 text-sm font-semibold text-slate-100 rounded-full bg-linear-to-b from-[#0c1327] to-[#070d1c]">
+                    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-linear-to-r from-transparent via-white/12 to-transparent -translate-x-full group-hover:translate-x-full" style={{ transition: "transform 0.65s ease, opacity 0.3s ease" }} />
+                    <span className="relative">Create Account</span>
+                  </span>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -314,18 +338,53 @@ export default function Navbar() {
                   {link.label}
                 </motion.a>
               ))}
-              <motion.a
-                href="#cta"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="mt-6 inline-flex items-center justify-center p-px rounded-full bg-linear-to-r from-brand-blue/75 via-brand-silver/55 to-brand-orange/75 text-white shadow-[0_0_16px_rgba(59,130,246,0.22),0_0_20px_rgba(245,158,11,0.16)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                onClick={(e) => handleNavClick(e, "#cta")}
-              >
-                <span className="px-10 py-3.5 rounded-full bg-linear-to-b from-[#0c1327] to-[#070d1c] font-semibold text-lg text-slate-100">
-                  Join Waitlist
-                </span>
-              </motion.a>
+              {user ? (
+                <>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <Link
+                      href="/dashboard"
+                      className="mt-6 inline-flex items-center justify-center p-px rounded-full bg-linear-to-r from-brand-blue/75 via-brand-silver/55 to-brand-orange/75 text-white shadow-[0_0_16px_rgba(59,130,246,0.22),0_0_20px_rgba(245,158,11,0.16)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    >
+                      <span className="px-10 py-3.5 rounded-full bg-linear-to-b from-[#0c1327] to-[#070d1c] font-semibold text-lg text-slate-100">
+                        Open Dashboard
+                      </span>
+                    </Link>
+                  </motion.div>
+                  <motion.form
+                    action="/auth/logout"
+                    method="post"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.45 }}
+                  >
+                    <button
+                      type="submit"
+                      className="text-lg font-semibold text-white/80 transition-colors hover:text-white"
+                    >
+                      Sign Out
+                    </button>
+                  </motion.form>
+                </>
+              ) : (
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Link
+                    href="/auth/register"
+                    className="mt-6 inline-flex items-center justify-center p-px rounded-full bg-linear-to-r from-brand-blue/75 via-brand-silver/55 to-brand-orange/75 text-white shadow-[0_0_16px_rgba(59,130,246,0.22),0_0_20px_rgba(245,158,11,0.16)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    <span className="px-10 py-3.5 rounded-full bg-linear-to-b from-[#0c1327] to-[#070d1c] font-semibold text-lg text-slate-100">
+                      Create Account
+                    </span>
+                  </Link>
+                </motion.div>
+              )}
             </motion.nav>
           </motion.div>
         )}

@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TrustStrip from "@/components/TrustStrip";
 import Footer from "@/components/Footer";
+import { getSessionUser } from "@/lib/auth";
 
 // Skeleton loaders for lazy-loaded sections
 function SectionSkeleton({ height = "60vh" }: { height?: string }) {
@@ -42,10 +43,12 @@ const CTASection = dynamic(() => import("@/components/CTASection"), {
   loading: () => <SectionSkeleton height="40vh" />,
 });
 
-export default function Home() {
+export default async function Home() {
+  const user = await getSessionUser();
+
   return (
     <>
-      <Navbar />
+      <Navbar user={user} />
       <main id="main-content" className="relative overflow-x-clip bg-surface-base">
         <Hero />
         <TrustStrip />
