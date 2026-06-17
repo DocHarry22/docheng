@@ -30,5 +30,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [...PROTECTED_PREFIXES.map((prefix) => `${prefix}/:path*`), ...AUTH_ROUTES],
+  matcher: ["/dashboard/:path*", "/calculators/:path*", "/auth/login", "/auth/register"],
 };
