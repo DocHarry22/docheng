@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { SessionUser } from "@/lib/auth";
 
-const HASH_SCROLL_MAX_RETRIES = 20;
+const MAX_HASH_SCROLL_RETRIES = 20;
 
 const navLinks = [
   { label: "Products", href: "#products" },
@@ -57,7 +57,7 @@ export default function Navbar({ user }: { user?: SessionUser | null }) {
        }
 
        attempts += 1;
-       if (attempts < HASH_SCROLL_MAX_RETRIES) {
+       if (attempts < MAX_HASH_SCROLL_RETRIES) {
          hashScrollRafRef.current = window.requestAnimationFrame(tryScroll);
        }
      };

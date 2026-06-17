@@ -22,6 +22,7 @@ Configure `.env.local` with:
 
 In development, the waitlist API falls back to `./data/waitlist.csv`. In production, `WAITLIST_FILE_PATH` must be set or the API will reject submissions.
 Registered users are stored in `./data/users.json` by default.
+This file-backed auth store is intended as a lightweight MVP for single-instance deployments and local evaluation; production deployments should replace it with durable shared storage and a managed bootstrap process for privileged accounts.
 
 ## Authenticated routes
 
