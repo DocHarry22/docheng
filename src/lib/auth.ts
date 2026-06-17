@@ -8,6 +8,7 @@ import { isValidEmail, normalizeEmail } from "@/lib/validation";
 const USERS_FILE_PATH = join(process.cwd(), "data", "users.json");
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7;
 const MIN_PASSWORD_LENGTH = 8;
+const PASSWORD_STRENGTH_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 let hasWarnedAboutDevSecret = false;
 
 export type UserRole = "viewer" | "member" | "admin";
@@ -40,7 +41,9 @@ function getSessionSecret() {
     );
   }
 
-  return process.env.NODE_ENV === "production" ? null : "docheng-dev-session-secret";
+  return process.env.NODE_ENV === "production"
+    ? null
+    : "__development_only_docheng_session_secret__";
 }
 
 function getDefaultUserStore(): StoredUsers {
@@ -208,6 +211,12 @@ export async function registerUser({
 
   if (password.length < MIN_PASSWORD_LENGTH) {
     throw new Error(`Passwords must be at least ${MIN_PASSWORD_LENGTH} characters long.`);
+  }
+
+  if (!PASSWORD_STRENGTH_REGEX.test(password)) {
+    throw new Error(
+      "Passwords must include at least one uppercase letter, one lowercase letter, and one number."
+    );
   }
 
   const store = await readUserStore();

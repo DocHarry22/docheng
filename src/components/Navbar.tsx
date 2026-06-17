@@ -7,6 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { SessionUser } from "@/lib/auth";
 
+const HASH_SCROLL_RETRY_LIMIT = 20;
+
 const navLinks = [
   { label: "Products", href: "#products" },
   { label: "Ecosystem", href: "#ecosystem" },
@@ -55,7 +57,7 @@ export default function Navbar({ user }: { user?: SessionUser | null }) {
        }
 
        attempts += 1;
-       if (attempts < 20) {
+       if (attempts < HASH_SCROLL_RETRY_LIMIT) {
          hashScrollRafRef.current = window.requestAnimationFrame(tryScroll);
        }
      };

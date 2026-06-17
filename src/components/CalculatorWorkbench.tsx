@@ -88,6 +88,10 @@ export default function CalculatorWorkbench({ slug }: { slug: string }) {
           <p className="mt-2 text-sm leading-relaxed text-text-secondary">
             Saved automatically in your browser so you can continue iterating.
           </p>
+          <p className="mt-2 text-xs leading-relaxed text-text-muted">
+            Avoid entering sensitive project or client data here because calculator inputs are
+            stored locally in this browser.
+          </p>
         </div>
 
         <div className="space-y-4">

@@ -150,7 +150,7 @@ export default function AuthForm({ mode, nextPath = "/dashboard" }: AuthFormProp
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 className="w-full rounded-2xl border border-border-medium bg-surface-overlay px-4 py-3 text-text-primary outline-none transition focus:border-brand-blue"
-                placeholder="At least 8 characters"
+                placeholder="Uppercase, lowercase, number"
               />
             </label>
 
@@ -166,7 +166,8 @@ export default function AuthForm({ mode, nextPath = "/dashboard" }: AuthFormProp
             {mode === "register" ? (
               <p className="text-xs leading-relaxed text-text-muted">
                 The first registered account is promoted to administrator automatically so the
-                initial team can manage protected tools and permissions.
+                initial team can manage protected tools and permissions. Passwords must include an
+                uppercase letter, lowercase letter, and number.
               </p>
             ) : null}
 
