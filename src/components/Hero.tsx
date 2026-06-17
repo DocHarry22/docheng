@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, fadeOnly } from "@/lib/animations";
 import { ChevronDown, ArrowRight } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useReducedMotion } from "@/lib/motion";
 
 const OrbitScene = dynamic(() => import("./OrbitScene"), {
   ssr: false,
@@ -23,6 +24,8 @@ const OrbitScene = dynamic(() => import("./OrbitScene"), {
 });
 
 export default function Hero() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <section className="relative min-h-svh overflow-hidden">
       {/* ========== LAYER 1: Base background ========== */}
@@ -35,7 +38,7 @@ export default function Hero() {
       
       {/* ========== LAYER 3: 3D Canvas / Centerpiece ========== */}
       <div className="absolute inset-0 opacity-65 md:opacity-70 pointer-events-none">
-        <OrbitScene />
+        {!shouldReduceMotion && <OrbitScene />}
       </div>
       
       {/* ========== LAYER 4: Subtle grid overlay ========== */}
@@ -125,8 +128,8 @@ export default function Hero() {
         aria-hidden="true"
       >
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          animate={shouldReduceMotion ? undefined : { y: [0, 6, 0] }}
+          transition={shouldReduceMotion ? undefined : { duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
           <ChevronDown size={20} className="text-text-muted/40" />
         </motion.div>

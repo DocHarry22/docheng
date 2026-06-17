@@ -19,7 +19,6 @@ const features = [
     description:
       "AI-powered study tools that distill complex materials into actionable knowledge. Spend less time searching, more time understanding.",
     gradient: "from-blue-500 to-cyan-400",
-    visual: "chatpdf",
   },
   {
     icon: Brain,
@@ -27,7 +26,6 @@ const features = [
     description:
       "Knowledge graphs and connected workspaces that reveal hidden patterns across your research, notes, and documents.",
     gradient: "from-violet-500 to-purple-400",
-    visual: "desk",
   },
   {
     icon: BarChart3,
@@ -35,7 +33,6 @@ const features = [
     description:
       "Productivity systems designed by engineers, for engineers. Structured workflows that adapt to how you actually think and build.",
     gradient: "from-emerald-500 to-teal-400",
-    visual: "analytics",
   },
   {
     icon: Route,
@@ -43,7 +40,6 @@ const features = [
     description:
       "Whether choosing a programme, planning a career, or building a portfolio — intelligent guidance for every decision point.",
     gradient: "from-amber-500 to-orange-400",
-    visual: "compass",
   },
   {
     icon: Lightbulb,
@@ -51,7 +47,6 @@ const features = [
     description:
       "Not AI for the sake of AI. Every DoCHEng tool applies artificial intelligence with practical engineering and education context.",
     gradient: "from-pink-500 to-rose-400",
-    visual: "research",
   },
   {
     icon: Shield,
@@ -59,7 +54,6 @@ const features = [
     description:
       "Enterprise-grade architecture from day one. Your data stays secure, your tools stay fast, and the ecosystem grows with you.",
     gradient: "from-indigo-500 to-violet-400",
-    visual: "platform",
   },
 ];
 

@@ -19,63 +19,87 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+   let rafId = 0;
+
+   const updateScrolled = () => {
+     setScrolled(window.scrollY > 50);
+     rafId = 0;
+   };
+
+   const handleScroll = () => {
+     if (rafId) return;
+     rafId = window.requestAnimationFrame(updateScrolled);
+   };
+
+   updateScrolled();
+   window.addEventListener("scroll", handleScroll, { passive: true });
+   return () => {
+     window.removeEventListener("scroll", handleScroll);
+     if (rafId) window.cancelAnimationFrame(rafId);
+   };
   }, []);
 
   useEffect(() => {
-    const scrollToHashTarget = () => {
-      const hash = window.location.hash;
-      if (!hash) return;
+   const scrollToHashTarget = () => {
+     const hash = window.location.hash;
+     if (!hash) return;
 
-      let attempts = 0;
-      const timer = window.setInterval(() => {
-        const el = document.querySelector(hash);
-        if (el) {
-          (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start" });
-          window.clearInterval(timer);
-          return;
-        }
+     let attempts = 0;
+     let rafId = 0;
+     const tryScroll = () => {
+       const el = document.querySelector(hash);
+       if (el) {
+         (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start" });
+         return;
+       }
 
-        attempts += 1;
-        if (attempts > 10) {
-          window.clearInterval(timer);
-        }
-      }, 100);
-    };
+       attempts += 1;
+       if (attempts < 20) {
+         rafId = window.requestAnimationFrame(tryScroll);
+       }
+     };
 
-    scrollToHashTarget();
-    window.addEventListener("hashchange", scrollToHashTarget);
+     rafId = window.requestAnimationFrame(tryScroll);
+     return () => {
+       if (rafId) window.cancelAnimationFrame(rafId);
+     };
+   };
 
-    return () => {
-      window.removeEventListener("hashchange", scrollToHashTarget);
-    };
+   let cleanupScroll = scrollToHashTarget();
+
+   const handleHashChange = () => {
+     cleanupScroll?.();
+     cleanupScroll = scrollToHashTarget();
+   };
+
+   window.addEventListener("hashchange", handleHashChange);
+
+   return () => {
+     cleanupScroll?.();
+     window.removeEventListener("hashchange", handleHashChange);
+   };
   }, []);
 
   // Active section tracking via IntersectionObserver
   useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.href.slice(1));
-    const observers: IntersectionObserver[] = [];
+   const sectionIds = navLinks.map((l) => l.href.slice(1));
+   const sections = sectionIds
+     .map((id) => document.getElementById(id))
+     .filter((section): section is HTMLElement => Boolean(section));
 
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
+   if (sections.length === 0) return;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            setActiveSection(`#${id}`);
-          }
-        },
-        { rootMargin: "-30% 0px -60% 0px" }
-      );
+   const observer = new IntersectionObserver((entries) => {
+     const visibleEntries = entries.filter((entry) => entry.isIntersecting);
+     if (visibleEntries.length === 0) return;
 
-      observer.observe(el);
-      observers.push(observer);
-    });
+     visibleEntries.sort((left, right) => right.intersectionRatio - left.intersectionRatio);
+     setActiveSection(`#${visibleEntries[0].target.id}`);
+   }, { rootMargin: "-30% 0px -60% 0px", threshold: [0.2, 0.4, 0.6] });
 
-    return () => observers.forEach((o) => o.disconnect());
+   sections.forEach((section) => observer.observe(section));
+
+   return () => observer.disconnect();
   }, []);
 
   const handleNavClick = useCallback(
@@ -225,7 +249,7 @@ export default function Navbar() {
               onClick={(e) => handleNavClick(e, "#cta")}
               className="text-sm font-medium text-text-secondary hover:text-white transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-blue rounded"
             >
-              Log In
+              Get Updates
             </a>
             <a
               href="#cta"
