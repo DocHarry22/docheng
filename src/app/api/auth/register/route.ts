@@ -33,7 +33,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const user = await registerUser(body);
+    const user = await registerUser({
+      email: body.email,
+      password: body.password,
+      name: body.name,
+    });
     const response = NextResponse.json({ ok: true, user });
     applySessionCookie(response, user);
     return response;

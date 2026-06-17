@@ -28,7 +28,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const user = await authenticateUser(body);
+    const user = await authenticateUser({
+      email: body.email,
+      password: body.password,
+    });
     if (!user) {
       return NextResponse.json(
         { error: "Invalid email or password." },

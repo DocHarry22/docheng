@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { SESSION_COOKIE_NAME } from "@/lib/auth";
+import { SESSION_COOKIE_NAME } from "@/lib/auth-constants";
 
 function buildLoginRedirect(request: NextRequest) {
   const loginUrl = new URL("/auth/login", request.url);

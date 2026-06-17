@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  getCalculatorBySlug,
-  type CalculatorDefinition,
-} from "@/lib/calculators";
+import { getCalculatorBySlug } from "@/lib/calculators";
 
 function formatResult(value: number) {
   if (!Number.isFinite(value)) {
@@ -27,34 +24,18 @@ function getStorageKey(slug: string) {
   return `docheng-calculator:${slug}`;
 }
 
+function createEmptyInputs(slug: string) {
+  const calculator = getCalculatorBySlug(slug);
+  if (!calculator) {
+    return {};
+  }
+
+  return Object.fromEntries(calculator.fields.map((field) => [field.key, ""]));
+}
+
 export default function CalculatorWorkbench({ slug }: { slug: string }) {
   const calculator = getCalculatorBySlug(slug);
-  const [inputs, setInputs] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    if (!calculator) return;
-
-    const stored = window.localStorage.getItem(getStorageKey(slug));
-    if (!stored) {
-      setInputs(
-        Object.fromEntries(calculator.fields.map((field) => [field.key, ""]))
-      );
-      return;
-    }
-
-    try {
-      const parsed = JSON.parse(stored) as Record<string, string>;
-      setInputs(
-        Object.fromEntries(
-          calculator.fields.map((field) => [field.key, parsed[field.key] ?? ""])
-        )
-      );
-    } catch {
-      setInputs(
-        Object.fromEntries(calculator.fields.map((field) => [field.key, ""]))
-      );
-    }
-  }, [calculator, slug]);
+  const [inputs, setInputs] = useState<Record<string, string>>(() => createEmptyInputs(slug));
 
   useEffect(() => {
     if (!calculator || Object.keys(inputs).length === 0) return;

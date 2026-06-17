@@ -2,9 +2,9 @@ import { cookies } from "next/headers";
 import { createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
+import { SESSION_COOKIE_NAME } from "@/lib/auth-constants";
 import { isValidEmail, normalizeEmail } from "@/lib/validation";
 
-export const SESSION_COOKIE_NAME = "docheng_session";
 const USERS_FILE_PATH = join(process.cwd(), "data", "users.json");
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7;
 const MIN_PASSWORD_LENGTH = 8;
