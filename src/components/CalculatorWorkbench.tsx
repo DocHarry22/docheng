@@ -41,7 +41,11 @@ export default function CalculatorWorkbench({ slug }: { slug: string }) {
     if (!calculator || Object.keys(inputs).length === 0) return;
 
     const timeout = window.setTimeout(() => {
-      window.localStorage.setItem(getStorageKey(slug), JSON.stringify(inputs));
+      try {
+        window.localStorage.setItem(getStorageKey(slug), JSON.stringify(inputs));
+      } catch {
+        // Ignore storage failures in restricted browsing contexts.
+      }
     }, 150);
 
     return () => window.clearTimeout(timeout);

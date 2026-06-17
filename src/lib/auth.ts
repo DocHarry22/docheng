@@ -10,6 +10,23 @@ const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7;
 const MIN_PASSWORD_LENGTH = 8;
 const PASSWORD_STRENGTH_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
 let hasWarnedAboutDevSecret = false;
+let registrationQueue = Promise.resolve();
+
+async function withRegistrationLock<T>(callback: () => Promise<T>) {
+  let releaseLock: (() => void) | undefined;
+  const previousQueue = registrationQueue;
+  registrationQueue = new Promise<void>((resolve) => {
+    releaseLock = resolve;
+  });
+
+  await previousQueue;
+
+  try {
+    return await callback();
+  } finally {
+    releaseLock?.();
+  }
+}
 
 export type UserRole = "viewer" | "member" | "admin";
 
@@ -198,47 +215,49 @@ export async function registerUser({
   password: string;
   name: string;
 }) {
-  const normalizedEmail = normalizeEmail(email);
-  const normalizedName = name.trim().replace(/\s+/g, " ");
+  return withRegistrationLock(async () => {
+    const normalizedEmail = normalizeEmail(email);
+    const normalizedName = name.trim().replace(/\s+/g, " ");
 
-  if (!isValidEmail(normalizedEmail)) {
-    throw new Error("Please enter a valid email address.");
-  }
+    if (!isValidEmail(normalizedEmail)) {
+      throw new Error("Please enter a valid email address.");
+    }
 
-  if (normalizedName.length < 2) {
-    throw new Error("Please enter your full name.");
-  }
+    if (normalizedName.length < 2) {
+      throw new Error("Please enter your full name.");
+    }
 
-  if (password.length < MIN_PASSWORD_LENGTH) {
-    throw new Error(`Passwords must be at least ${MIN_PASSWORD_LENGTH} characters long.`);
-  }
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      throw new Error(`Passwords must be at least ${MIN_PASSWORD_LENGTH} characters long.`);
+    }
 
-  if (!PASSWORD_STRENGTH_REGEX.test(password)) {
-    throw new Error(
-      "Passwords must include at least one uppercase letter, one lowercase letter, and one number."
-    );
-  }
+    if (!PASSWORD_STRENGTH_REGEX.test(password)) {
+      throw new Error(
+        "Passwords must include at least one uppercase letter, one lowercase letter, and one number."
+      );
+    }
 
-  const store = await readUserStore();
-  if (store.users.some((user) => user.email === normalizedEmail)) {
-    throw new Error("An account already exists for that email address.");
-  }
+    const store = await readUserStore();
+    if (store.users.some((user) => user.email === normalizedEmail)) {
+      throw new Error("An account already exists for that email address.");
+    }
 
-  const role: UserRole = store.users.length === 0 ? "admin" : "member";
-  const { salt, passwordHash } = hashPassword(password);
+    const role: UserRole = store.users.length === 0 ? "admin" : "member";
+    const { salt, passwordHash } = hashPassword(password);
 
-  const user: StoredUser = {
-    email: normalizedEmail,
-    name: normalizedName,
-    role,
-    createdAt: new Date().toISOString(),
-    salt,
-    passwordHash,
-  };
+    const user: StoredUser = {
+      email: normalizedEmail,
+      name: normalizedName,
+      role,
+      createdAt: new Date().toISOString(),
+      salt,
+      passwordHash,
+    };
 
-  store.users.push(user);
-  await writeUserStore(store);
-  return sanitizeUser(user);
+    store.users.push(user);
+    await writeUserStore(store);
+    return sanitizeUser(user);
+  });
 }
 
 export async function authenticateUser({
