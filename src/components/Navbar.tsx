@@ -19,23 +19,23 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-   let rafId = 0;
+   let rafRequestId = 0;
 
    const updateScrolled = () => {
      setScrolled(window.scrollY > 50);
-     rafId = 0;
+     rafRequestId = 0;
    };
 
    const handleScroll = () => {
-     if (rafId) return;
-     rafId = window.requestAnimationFrame(updateScrolled);
+     if (rafRequestId) return;
+     rafRequestId = window.requestAnimationFrame(updateScrolled);
    };
 
    updateScrolled();
    window.addEventListener("scroll", handleScroll, { passive: true });
    return () => {
      window.removeEventListener("scroll", handleScroll);
-     if (rafId) window.cancelAnimationFrame(rafId);
+     if (rafRequestId) window.cancelAnimationFrame(rafRequestId);
    };
   }, []);
 
@@ -45,7 +45,7 @@ export default function Navbar() {
      if (!hash) return;
 
      let attempts = 0;
-     let rafId = 0;
+     let rafRequestId = 0;
      const tryScroll = () => {
        const el = document.querySelector(hash);
        if (el) {
@@ -55,13 +55,13 @@ export default function Navbar() {
 
        attempts += 1;
        if (attempts < 20) {
-         rafId = window.requestAnimationFrame(tryScroll);
+         rafRequestId = window.requestAnimationFrame(tryScroll);
        }
      };
 
-     rafId = window.requestAnimationFrame(tryScroll);
+     rafRequestId = window.requestAnimationFrame(tryScroll);
      return () => {
-       if (rafId) window.cancelAnimationFrame(rafId);
+       if (rafRequestId) window.cancelAnimationFrame(rafRequestId);
      };
    };
 

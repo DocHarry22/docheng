@@ -82,7 +82,7 @@ function getWaitlistFilePath() {
   return join(process.cwd(), "data", "waitlist.csv");
 }
 
-function escapeCsv(value: string) {
+function escapeCsvValue(value: string) {
   return `"${value.replaceAll('"', '""')}"`;
 }
 
@@ -145,7 +145,7 @@ export async function POST(request: Request) {
       normalizedEmail,
       normalizedInterests.join(";"),
     ]
-      .map(escapeCsv)
+      .map(escapeCsvValue)
       .join(",");
 
     await appendFile(waitlistFilePath, row + "\n", "utf-8");

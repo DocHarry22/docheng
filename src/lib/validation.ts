@@ -1,4 +1,4 @@
-export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 export const MAX_EMAIL_LENGTH = 254;
 
 export const WAITLIST_INTERESTS = [
@@ -15,7 +15,7 @@ export type WaitlistInterest = (typeof WAITLIST_INTERESTS)[number];
 const allowedInterestSet = new Set<string>(WAITLIST_INTERESTS);
 
 export function isValidEmail(email: string) {
-  return email.length <= MAX_EMAIL_LENGTH && EMAIL_RE.test(email);
+  return email.length <= MAX_EMAIL_LENGTH && EMAIL_REGEX.test(email);
 }
 
 export function normalizeEmail(email: string) {
