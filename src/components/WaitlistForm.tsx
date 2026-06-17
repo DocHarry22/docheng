@@ -3,16 +3,19 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import {
+  isValidEmail,
+  normalizeEmail,
+  WAITLIST_INTERESTS,
+} from "@/lib/validation";
 
 const interests = [
-  { id: "desk", label: "Desk" },
-  { id: "chatpdf", label: "ChatPDF" },
-  { id: "resume", label: "Resume Parser" },
-  { id: "compass", label: "Course Compass" },
-  { id: "student", label: "Student App" },
-  { id: "research", label: "Research AI" },
+  { id: WAITLIST_INTERESTS[0], label: "Desk" },
+  { id: WAITLIST_INTERESTS[1], label: "ChatPDF" },
+  { id: WAITLIST_INTERESTS[2], label: "Resume Parser" },
+  { id: WAITLIST_INTERESTS[3], label: "Course Compass" },
+  { id: WAITLIST_INTERESTS[4], label: "Student App" },
+  { id: WAITLIST_INTERESTS[5], label: "Research AI" },
 ];
 
 interface WaitlistFormProps {
@@ -29,6 +32,7 @@ export default function WaitlistForm({
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [website, setWebsite] = useState("");
 
   const toggleInterest = (id: string) => {
     setSelectedInterests((prev) =>
@@ -40,8 +44,8 @@ export default function WaitlistForm({
     e.preventDefault();
     setError("");
 
-    const trimmed = email.trim();
-    if (!trimmed || !EMAIL_RE.test(trimmed)) {
+    const normalized = normalizeEmail(email);
+    if (!normalized || !isValidEmail(normalized)) {
       setError("Please enter a valid email address.");
       return;
     }
@@ -51,7 +55,11 @@ export default function WaitlistForm({
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed, interests: selectedInterests }),
+        body: JSON.stringify({
+          email: normalized,
+          interests: selectedInterests,
+          website,
+        }),
       });
 
       if (!res.ok) {
@@ -62,6 +70,7 @@ export default function WaitlistForm({
       setSubmitted(true);
       setEmail("");
       setSelectedInterests([]);
+      setWebsite("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
@@ -127,7 +136,19 @@ export default function WaitlistForm({
               onSubmit={handleSubmit}
               className="flex flex-col sm:flex-row items-stretch gap-3"
               noValidate
+              aria-busy={submitting}
             >
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="waitlist-website">Company website</label>
+                <input
+                  id="waitlist-website"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
               <div className="relative flex-1">
                 <label htmlFor="waitlist-email" className="sr-only">
                   Email address

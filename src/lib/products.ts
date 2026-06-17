@@ -46,7 +46,7 @@ export const products: Product[] = [
     categories: ["productivity", "ai-tools"],
     icon: Brain,
     gradient: "from-blue-500 to-cyan-400",
-    url: "#cta",
+    url: "/dashboard",
   },
   {
     id: "chatpdf",
@@ -58,7 +58,7 @@ export const products: Product[] = [
     categories: ["ai-tools", "student"],
     icon: FileText,
     gradient: "from-violet-500 to-purple-400",
-    url: "#cta",
+    url: "/dashboard",
   },
   {
     id: "resume-parser",
@@ -110,11 +110,12 @@ export const products: Product[] = [
     name: "Engineering Calculator Suite",
     shortName: "Eng Calc",
     description:
-      "Technical calculators and simulation tools for chemical, mechanical, and process engineering.",
-    status: "coming-soon",
+      "Protected engineering calculators with session-based access, saved inputs, and role-aware tool gating.",
+    status: "live",
     categories: ["engineering"],
     icon: Calculator,
     gradient: "from-orange-500 to-red-400",
+    url: "/calculators",
   },
   {
     id: "career-intelligence",

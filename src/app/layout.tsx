@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
+const DEFAULT_SITE_URL = "https://docheng.com";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
+function getSiteUrl() {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL);
+  } catch {
+    return new URL(DEFAULT_SITE_URL);
+  }
+}
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://docheng.com";
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: {
@@ -37,11 +34,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "DoCHEng" }],
   creator: "DoCHEng",
-  metadataBase: new URL(siteUrl),
+  metadataBase: siteUrl,
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteUrl,
+    url: siteUrl.toString(),
     siteName: "DoCHEng",
     title: "DoCHEng — Driven by Curiosity",
     description:
@@ -69,8 +66,8 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "DoCHEng",
-    url: siteUrl,
-    logo: `${siteUrl}/icon`,
+    url: siteUrl.toString(),
+    logo: `${siteUrl.toString()}/icon`,
     description:
       "The intelligence ecosystem for learning, work, and technical growth.",
     sameAs: [] as string[],
@@ -83,6 +80,10 @@ export default function RootLayout({
       "Engineering Software",
     ],
   };
+  const serializedStructuredData = JSON.stringify(structuredData).replaceAll(
+    "<",
+    "\\u003c"
+  );
 
   return (
     <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
@@ -90,14 +91,11 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData),
+            __html: serializedStructuredData,
           }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning
-      >
+      <body className="antialiased" suppressHydrationWarning>
         <a href="#main-content" className="skip-to-content">
           Skip to content
         </a>

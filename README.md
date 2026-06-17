@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DoCHEng
 
-## Getting Started
+DoCHEng is a Next.js marketing site plus a lightweight authenticated workspace for the DoCHEng product ecosystem, with a waitlist capture flow and protected engineering calculators.
 
-First, run the development server:
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run typecheck
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Configure `.env.local` with:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `NEXT_PUBLIC_SITE_URL`: canonical public origin for metadata and origin validation
+- `WAITLIST_ALLOWED_ORIGINS`: optional comma-separated trusted origins for the waitlist form
+- `WAITLIST_FILE_PATH`: explicit server-side CSV path for waitlist persistence in production
+- `SESSION_SECRET`: required in production to sign auth sessions; omitted locally a development fallback is used
 
-## Learn More
+In development, the waitlist API falls back to `./data/waitlist.csv`. In production, `WAITLIST_FILE_PATH` must be set or the API will reject submissions.
+Registered users are stored in `./data/users.json` by default.
+This file-backed auth store is intended as a lightweight MVP for single-instance deployments and local evaluation; production deployments should replace it with durable shared storage and a managed bootstrap process for privileged accounts.
 
-To learn more about Next.js, take a look at the following resources:
+## Authenticated routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/auth/login` and `/auth/register` provide email/password authentication
+- `/dashboard` is a protected workspace with role-aware access summaries
+- `/calculators` and `/calculators/[slug]` provide protected engineering calculators
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The app serves marketing pages, auth routes, protected dashboard/calculator pages, and the waitlist/auth API routes.
+- Security headers are configured in `next.config.ts`.
+- The default font stack is local/system-based so CI and offline builds do not depend on Google Fonts.
