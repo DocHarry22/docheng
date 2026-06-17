@@ -1,17 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 
 interface AuthFormProps {
   mode: "login" | "register";
+  nextPath?: string;
 }
 
-export default function AuthForm({ mode }: AuthFormProps) {
+export default function AuthForm({ mode, nextPath = "/dashboard" }: AuthFormProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") || "/dashboard";
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [name, setName] = useState("");
@@ -26,7 +25,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
           "Register to unlock the dashboard, live calculators, and permission-aware product access.",
         submitLabel: "Create account",
         alternateLabel: "Already have an account?",
-        alternateHref: `/auth/login${searchParams.get("next") ? `?next=${encodeURIComponent(nextPath)}` : ""}`,
+        alternateHref:
+          nextPath !== "/dashboard"
+            ? `/auth/login?next=${encodeURIComponent(nextPath)}`
+            : "/auth/login",
         alternateAction: "Sign in",
       };
     }
@@ -37,10 +39,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
         "Use your DoCHEng account to access the dashboard and engineering workspace.",
       submitLabel: "Sign in",
       alternateLabel: "Need an account?",
-      alternateHref: `/auth/register${searchParams.get("next") ? `?next=${encodeURIComponent(nextPath)}` : ""}`,
+      alternateHref:
+        nextPath !== "/dashboard"
+          ? `/auth/register?next=${encodeURIComponent(nextPath)}`
+          : "/auth/register",
       alternateAction: "Register",
     };
-  }, [mode, nextPath, searchParams]);
+  }, [mode, nextPath]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
